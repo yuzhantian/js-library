@@ -1,0 +1,26 @@
+{
+	"pageNum":1,
+	"numPerPage":10,
+	"total":5,
+	"lists":[{
+		"id":1,
+		"nickname":"張三1",
+		"sex":"男"
+	},{
+		"id":2,
+		"nickname":"張三2",
+		"sex":"男"
+	},{
+		"id":3,
+		"nickname":"張三3",
+		"sex":"男"
+	},{
+		"id":4,
+		"nickname":"張三4",
+		"sex":"男"
+	},{
+		"id":5,
+		"nickname":"張三5",
+		"sex":"男"
+	}]
+}

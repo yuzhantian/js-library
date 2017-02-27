@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Ajax与面向对象Demo</title>
+    <style>
+    	.wrap{
+    		text-align:center;
+    	}
+        #tab1{
+             width: 500px;
+             margin: 20px auto;
+             border-collapse: collapse;
+             border: 1px solid #999;
+             
+         }
+         #tab1 td,#tab1 th{border: 1px solid #999;padding:5px 10px;text-align:center;}
+        #tab1 th{font-weight: bold;}
+        .pager {
+			display: inline-block;
+			margin-right: 10px;
+		    margin-top: 2px;
+		}
+		.pager a,
+		.pager .flip,
+		.pager .curPage {
+			padding: 2px 8px;
+		    border: 1px #ccc solid;
+		    cursor: pointer;
+		    margin: 0 2px;
+		    color: #ccc;
+		}
+		.pager a:hover {
+		    background-color: #039cae;
+		    color: #fff;
+		}
+		.pager .noPage {
+		    color: #a4a4a4;
+		    cursor: default;
+		}
+		.pager .curPage {
+			background: none repeat scroll 0 0 #039cae;
+			color: #fff; 
+			width: 26px;
+		}
+		.pager .flip { 
+			width: 56px; 
+		}
+    </style>
+</head>
+
+<body>
+	<div class="wrap">
+		<div class="btnBox">
+			<input class="btnRead" type="button" value="读取" /> 
+		    <lable>昵称：</lable><input class="keyword" type="text" />
+		    <input class="btnSearch" type="button" value="搜索" />
+		    <input class="btnAdd" type="button" value="添加" />
+		</div>
+	    <table id="tab1">
+	        <thead>
+	            <th>ID</th>
+	            <th>昵称</th>
+	            <th>性别</th>
+	            <th>操作</th>
+	        </thead>
+	        <tbody>
+	            <tr>
+	                <td class="userID">1</td>
+	                <td class="userName">张三</td>
+	                <td class="userSex">男</td>
+	                <td><a class="btnEdit" href="javascript:;">编辑</a>&nbsp;&nbsp;<a class="btnDel" href="javascript:;">删除</a></td>
+	            </tr>
+	        </tbody>
+	    </table>
+	    <div class="pager"></div>
+	</div>
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script type="text/javascript" src="jquery.pager.js"></script>
+	<script>
+		var pager,pageSize=10;
+		$(document).ready(function(){
+			pager = $(".pager").pager({
+				pageSize: pageSize,
+				onPageChanged:true,
+				onPageChange: onPageChange
+			});
+			onPageChange(1);
+			$(".btnSearch").click(function(){
+				onPageChange(1);
+			});
+		});
+		function onPageChange(pageNum) {
+			//获取其他查詢條件；
+			$.ajax({ 
+			    type: "GET", 	
+				url: "http://www.erazar.com:8080/TestDemo/test/listUser.action",
+				dataType: "jsonp",
+				jsonp: "callback",
+				data: {
+					pageNum:pageNum,
+					pageRequest:1,
+					numPerPage:pageSize
+					//其他查詢條件
+				},
+				success: function(data) {
+					if (data.total > 0) {
+						//重新賦值,拼接字符串
+						console.log(data);
+						//刷新分页器
+						pager.setItemCount(data.total);
+						pager.setPageIndex(pageNum-1);
+					} else {
+						console.log("出现错误：" + data.msg);
+					}
+				},
+				error: function(jqXHR){
+				   alert("发生错误：" + jqXHR.status);  
+				},     
+			});
+		}
+</script>
+    
+
+</body>
+
+</html>
+<!--
+http://www.erazar.com:8080/TestDemo/test/getUser.action?userVO.id=50   //条件查询用户
+http://www.erazar.com:8080/TestDemo/test/updateUser.action?userVO.id=50&userVO.nickName=22   //修改用户
+http://www.erazar.com:8080/TestDemo/test/addUser.action  //添加用户
+http://www.erazar.com:8080/TestDemo/test/deleteUser.action?ids=56  //删除用户
+http://www.erazar.com:8080/TestDemo/test/listUser.action?pageRequest=1&pageNum=1&numPerPage=2   //分页查询   pageRequest=1是固定参数不用修改，pageNum是当前页码，numPerPage当前页显示条数
+
+
+UserVO实体属性说明：
+/**
+	 * id
+	 */
+	private Integer id;
+
+	/**
+	 * 昵称
+	 */
+	private String nickName;
+
+	/**
+	 * 创建时间
+
+	 */
+	private Date createTime;
+
+	/**
+	 * 更新时间
+
+	 */
+	private Date updateTime;
+
+	/**
+	 * 性别(1男，2女，默认0)
+	 */
+	private Integer sex;
+
+	/**
+	 * 省份 
+	 */
+	private String province;
+
+	/**
+	 * 城市
+	 */
+	private String city;
+
+	/**
+	 * 国家
+	 */
+	private String country;
+
+	/**
+	 * 头像
+	 */
+	private String headimgurl;
+
+	/**
+	 * unionid绑定公众号后才能获取
+	 */
+	private String unionid;
+
+	/**
+	 * 网页授权接口调用凭证
+	 */
+	private String accessToken;
+
+	/**
+	 * access_token接口调用凭证超时时间，单位（秒）
+	 */
+	private Integer expiresIn;
+
+	/**
+	 * 用户刷新access_token
+	private String refreshToken;
+	
+	/**
+	 * 优惠卷面额
+	 */
+	private String couponSize;
+	
+	/**
+	 * 客户端ip
+	 */
+	private String hostIp;
+
+	/**
+	 * @label 是否填过资料
+	 */
+	private Integer isCoupon;
+
+	/**
+	 * @label 是否玩过
+	 */
+	private Integer playTimes;
+	
+	/**
+	 * @label 用户是否获得奖品
+	 */
+	private Integer isWin;
+	
+	/**
+	 * 上传图片的背景标记
+	 */
+	private Integer photoIndex;
+	
+	/**
+	 * 上传的图片
+	 */
+	private String photo;
+
+
+-->
